@@ -1,0 +1,152 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 13px!important;
+  font-weight: 400;
+  font-family: Poppins,Helvetica,sans-serif;
+  background: #f2f3f7;
+}
+
+.opacity-50 {
+  opacity: .5!important;
+}
+
+.btn.btn-hover-transparent-white {
+  color: #fff;
+  background-color: transparent;
+  border-color: transparent;
+}
+
+btn.btn-hover-transparent-white.focus:not(.btn-text), .btn.btn-hover-transparent-white:focus:not(.btn-text), .btn.btn-hover-transparent-white:hover:not(.btn-text):not(:disabled):not(.disabled) {
+  color: #fff;
+  background-color: rgba(255,255,255,.1);
+  border-color: transparent;
+}
+
+.text-dark {
+  color: #181c32!important;
+}
+
+.font-weight-bold {
+  font-weight: 500!important;
+}
+
+@media (max-width: 600px) {
+  .table {
+    width: 100%;
+    overflow: auto;
+    display: block;
+  }
+}
+
+@media (min-width: 992px) {
+  .header-top {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 70px;
+    background-color: #3699ff;
+  }
+
+  .nav-item {
+    padding: 0;
+    margin-right: .25rem;
+    position: relative;
+  }
+
+  .nav-item .nav-link {
+    margin: 0;
+    padding: .85rem 1.25rem;
+    font-weight: 500;
+    opacity: .8;
+    color: #fff;
+  }
+}
+
+.login {
+  position: fixed;
+  height: 100vh;
+  width: 100%;
+}
+
+.login .content {
+  width: 500px;
+  margin: 40px auto 10px auto;
+  padding: 30px;
+  padding-top: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.login-card {
+  padding: 20px;
+}
+
+/* User list */
+.table tr th {
+  color: #b5b5c3;
+  font-size: .9rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: .1rem;
+  padding: 12px 10px;
+}
+
+.table tr th {
+  color: #3f4254;
+  vertical-align: middle;
+  padding: 12px 10px;
+  font-size: 1rem;
+}
+
+.card {
+  box-shadow: 0 0 30px 0 rgba(82,63,105,.05);
+  border: 0;
+}
+
+.card-header {
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  min-height: 70px;
+  padding-top: 0;
+  padding-bottom: 0;
+  background-color: transparent;
+  border:none;
+}
+
+.card-title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin: .5rem;
+  margin-left: 0;
+  font-weight: 500;
+  font-size: 1.275rem;
+  color: #181c32;
+}
+
+.card-toolbar {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin: .5rem 0;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
