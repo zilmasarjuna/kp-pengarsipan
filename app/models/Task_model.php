@@ -6,14 +6,12 @@ class Task_model {
   }
 
   public function getTask() {
-    $query = 'SELECT t.id, t.name, t.tgl_deadline, c.fullname as client, s.fullname as staff, f.filename as file
+    $query = 'SELECT t.id, t.name, t.tgl_deadline, c.fullname as client, s.fullname as staff
       from tasks as t 
       inner join clients as c 
       on t.client_id = c.id
       inner join staffs as s
       on t.staff_id = s.id
-      left join files as f
-      on t.id = f.task_id;
     ';
 
     $this->db->query($query);

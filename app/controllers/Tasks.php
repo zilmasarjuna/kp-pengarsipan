@@ -52,4 +52,25 @@
         exit;
       }
     }
+
+    public function upload() {
+      $nameFile = $_FILES['fileUpload']['name'];
+      $nameSementara = $_FILES['fileUpload']['tmp_name'];
+
+      $dirUpload = "./file/task/";
+      $terupload = move_uploaded_file($nameSementara, $dirUpload.$nameFile);
+
+      if ($terupload) {
+        $filename = '/file/task/'.$nameFile;
+        if ($this->model('Files_model')->saveFile($filename) > 0) {
+          Flasher::setFlash('berhasil', 'diupload', 'success', 'Task');
+          header('Location: ' . BASEURL . '/tasks');
+        } else {
+          Flasher::setFlash('gagal', 'diupload', 'danger', 'Task');
+          header('Location: ' . BASEURL . '/tasks');
+        }
+      } else {
+        echo "Upload Gagal!";
+      }
+    }
   }

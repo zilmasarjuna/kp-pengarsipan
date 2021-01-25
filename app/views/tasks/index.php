@@ -36,7 +36,6 @@
               <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<th>Client</th>' ?>
               <th>Deadline</th>
               <th>Status</th>
-              <th>File</th>
               <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<th>Action</th>' ?>
             </tr>
           </thead>
@@ -50,10 +49,11 @@
 
                 <td><?= $data['tasks'][$usr]['tgl_deadline']; ?></td>
                 <td><?= $data['tasks'][$usr]['tgl_deadline']; ?></td>
-                <td><?= $data['tasks'][$usr]['file']; ?></td>
-                <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<td><a href="'. BASEURL .'/tasks/delete/'. $data['tasks'][$usr]['id'] .'" class="badge badge-danger mr-1" onclick="return confirm("yakin?")">hapus</a>
+                <?php if ($_SESSION['user']['role_name'] === 'konsultan') echo '<td><a href="'. BASEURL .'/tasks/delete/'. $data['tasks'][$usr]['id'] .'" class="badge badge-danger mr-1" onclick="return confirm("yakin?")">hapus</a>
                     <a href="'. BASEURL .'/tasks/change/'. $data['tasks'][$usr]['id'] .'" class="badge badge-warning mr-1 modalUbahTask" data-toggle="modal" data-target="#formModal" data-id="'.$data['tasks'][$usr]['id'].'">Ubah</a></td>'; ?>
-              </tr>
+              
+                <?php if ($_SESSION['user']['role_name'] === 'staff') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-warning modalUploadTask" data-toggle="modal" data-target="#formModalUpload" data-id="'.$data['tasks'][$usr]['id'].'">Upload</td>'; ?>
+            </tr>
             <?php endforeach; ?>
           </tbody>
         </table>
@@ -86,8 +86,8 @@
             <textarea 
               class="form-control" 
               aria-label="With textarea" 
-              name="description"
-              col="4"
+            name="description"
+              col="4"  
               id="description"
             ></textarea>
           </div>
@@ -124,6 +124,33 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-primary">Tambah Data</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="formModalUpload" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="formModalLabel">Upload Task</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="<?= BASEURL; ?>/tasks/upload" method="post" class="form1" enctype="multipart/form-data">
+        <div class="modal-body">
+          <input hidden name="id" id="idUpload" >
+          <div class="custom-file">
+            <input type="file" id="fileUpload" name="fileUpload">
+            <!-- <label class="custom-file-label" for="fileUpload">Choose file</label> -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Data</button>
         </div>
       </form>
     </div>

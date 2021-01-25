@@ -92,6 +92,22 @@ $(function() {
     $("#client").val('');
     $("#id").val('');
   })
+
+  $('.modalUploadTask').on('click', function() {
+    var id = $(this).data('id');
+    $.ajax({
+      url: 'http://localhost/mvc/public/tasks/getubah',
+      data: {
+        id: id,
+      },
+      method: 'post',
+      dataType: 'json',
+      success: function(data) {
+        console.log(data);
+        $("#idUpload").val(data.id);
+      }
+    });
+  });
 })
 
 
