@@ -63,21 +63,29 @@ class Task_model {
   }
 
   public function getTaskById($id) {
-    $query = 'SELECT t.id, t.name, t.description, t.tgl_deadline, c.id as client, s.id as staff, f.filename as file
+    $query = 'SELECT t.id, t.name, t.description, t.tgl_deadline, c.id as client, s.id as staff
       from tasks as t 
       inner join clients as c 
       on t.client_id = c.id
       inner join staffs as s
       on t.staff_id = s.id
-      left join files as f
-      on t.id = f.task_id
       where t.id = :id
       ;
     ';
     $this->db->query($query);
 
     $this->db->bind('id', $id);
-    return $this->db->single();
+    $task = $this->db->single();
+
+    $query = 'SELECT * from files where task_id = :id';
+
+    $this->db->query($query);
+    $this->db->bind('id', $task['id']);
+    $this->db->execute();
+
+    $dataFile = $this->db->resultSet();
+    $task['files'] = $dataFile;
+    return $task;
   }
 
   public function deleteTask($id) {

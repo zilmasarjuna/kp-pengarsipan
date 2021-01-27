@@ -62,7 +62,7 @@
 
       if ($terupload) {
         $filename = '/file/task/'.$nameFile;
-        if ($this->model('Files_model')->saveFile($filename) > 0) {
+        if ($this->model('Files_model')->saveFile($filename, $nameFile) > 0) {
           Flasher::setFlash('berhasil', 'diupload', 'success', 'Task');
           header('Location: ' . BASEURL . '/tasks');
         } else {

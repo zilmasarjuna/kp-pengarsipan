@@ -135,18 +135,43 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="formModalLabel">Upload Task</h5>
+        <h5 class="modal-title" id="formModalLabel">Detail Task</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      <div class="modal-info">
+        <div class="row">
+          <div class="col-md-6">
+            <label class="font-weight-bold">Tugas</label>
+            <p id="task_name">Tugas Pajak 1</p>
+          </div>
+          <div className="col-md-6">
+            <label class="font-weight-bold">Tanggal Deadline</label>
+            <p id="task_tgl" class="btn-sm btn-text btn-light-primary text-uppercase font-weight-bold">12 Septemper 2021</p>
+          </div>
+          <div class="col-md-12">
+            <label class="font-weight-bold">Deskripsi</label>
+            <p id="task_description">Tugas Pajak 1</p>
+          </div>
+          <div class="col-md-12">
+            <label class="font-weight-bold">Files</label>
+            <ul id="listData" class="list-file">
+              
+            </ul>
+          </div>
+        </div>
+      </div>
       <form action="<?= BASEURL; ?>/tasks/upload" method="post" class="form1" enctype="multipart/form-data">
         <div class="modal-body">
           <input hidden name="id" id="idUpload" >
-          <div class="custom-file">
+          <div class="button-wrap">
+            <label class="new-button" for="fileUpload"> Upload File</label>
             <input type="file" id="fileUpload" name="fileUpload">
-            <!-- <label class="custom-file-label" for="fileUpload">Choose file</label> -->
-          </div>
+          <div>
+          <!-- <div class="fallback dz-message">
+            <input type="file" id="fileUpload" name="fileUpload">
+          </div> -->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

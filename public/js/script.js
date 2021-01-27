@@ -95,6 +95,7 @@ $(function() {
 
   $('.modalUploadTask').on('click', function() {
     var id = $(this).data('id');
+    $("#listData").children().remove();
     $.ajax({
       url: 'http://localhost/mvc/public/tasks/getubah',
       data: {
@@ -103,11 +104,31 @@ $(function() {
       method: 'post',
       dataType: 'json',
       success: function(data) {
-        console.log(data);
         $("#idUpload").val(data.id);
+        $("#task_name").text(data.name);
+        $("#task_description").text(data.description);
+        $("#task_tgl").text(data.tgl_deadline);
+
+        $.fn.addNewRow = function (row) {
+          $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download>"+ row.filename +"</a></li>");
+        }
+
+        if (data.files.length === 0) {
+          $("#listData").append("<li class='text-danger'>File masih kosong</li>");
+        }
+        for (var i = 0; i < data.files.length; i++) {
+          $("#listData").addNewRow(data.files[i]);
+        }
       }
     });
   });
+
+
+  $("#fileUpload").change(function() {
+    var i = $(this).prev('label').clone();
+		var file = $('#fileUpload')[0].files[0].name;
+		$(this).prev('label').text(file);
+  })
 })
 
 

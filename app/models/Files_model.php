@@ -7,12 +7,13 @@ class Files_model {
     $this->db = new Database;
   }
 
-  public function saveFile($filename) {
-    $query = 'INSERT INTO files (filename, task_id) VALUES (:filename, :task)';
+  public function saveFile($filename, $name) {
+    $query = 'INSERT INTO files (filename, path_name , task_id) VALUES (:name, :filename, :task)';
     $this->db->query($query);
 
     try {
       $this->db->bind('filename', $filename);
+      $this->db->bind('name', $name);
       $this->db->bind('task', $_POST['id']);
       $this->db->execute();
     } catch(PDOException $e) {
