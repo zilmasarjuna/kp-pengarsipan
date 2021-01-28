@@ -3,11 +3,7 @@
     <div class="card login-card">
       <form action="<?= BASEURL; ?>/login/auth" class="login-form" method="post">
         <h3>Sign in</h3>
-        <div class="alert alert-danger display-hide">
-        <button class="close" data-close="alert"></button>
-          <span>
-          Enter any username and password. </span>
-        </div>
+        <?php Flasher::flashError(); ?>
         <div class="form-group">
           <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
           <label class="control-label visible-ie8 visible-ie9">Username</label>

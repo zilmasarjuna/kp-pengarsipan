@@ -21,4 +21,20 @@ class Flasher {
       unset($_SESSION['flash']);
     }
   }
+
+  public static function setError($pesan) {
+    $_SESSION['error'] = $pesan;
+  }
+
+  public static function flashError() {
+    if (isset($_SESSION['error'])) {
+      echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+            '. $_SESSION['error'] .'
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>';
+      unset($_SESSION['error']);
+    }
+  }
 }

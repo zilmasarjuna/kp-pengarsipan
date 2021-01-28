@@ -77,17 +77,34 @@ class User_model {
   }
 
   public function addUser($data) {
-    $query = "INSERT INTO users (username, pasword, role_id) VALUES(:username, :password, :role_id)";
-    $this->db->query($query);
-
+    $queryUser = "INSERT INTO users (username, pasword, role_id) VALUES(:username, :password, :role_id)";
+    $queryClient = "INSERT INTO clients (user_id, fullname, address, no_telp) VALUES(:user_id, :fullname, :address, :no_telp)";
+    $queryStaff = "INSERT INTO staffs (user_id, fullname, address, no_telp) VALUES(:user_id, :fullname, :address, :no_telp)";
+    
     try {
+      $this->db->root()->beginTransaction();
+      $this->db->query($queryUser);
+      
       $this->db->bind('username', $data['username']);
       $this->db->bind('password', $data['password']);
       $this->db->bind('role_id', $data['role_id']);
-
       $this->db->execute();
+      $userId = $this->db->root()->lastInsertId();
+      if ($data['role_id'] === "2") {
+        $this->db->query($queryStaff);
+      } else {
+        $this->db->query($queryClient);
+      }
+      $this->db->bind('user_id', $userId);
+      $this->db->bind('fullname', $data['fullname']);
+      $this->db->bind('address', $data['address']);
+      $this->db->bind('no_telp', $data['no_telp']);
+      $this->db->execute();
+
+      $this->db->root()->commit();
     } catch(PDOException $e) {
       echo $e->getMessage();
+      $this->db->root()->rollBack();
     }
 
     return $this->db->rowCount();
@@ -95,10 +112,19 @@ class User_model {
 
   public function deleteUser($id) {
     $query = 'DELETE FROM users WHERE id= :id';
-    $this->db->query($query);
-    $this->db->bind('id', $id);
+    try {
+      $this->db->query("DELETE FROM clients WHERE user_id=:id");
+      $this->db->query("DELETE FROM staffs WHERE user_id=:id");
+      $this->db->bind('id', $id);
 
-    $this->db->execute();
+      $this->db->execute();
+
+      $this->db->query($query);
+      $this->db->bind('id', $id);
+      $this->db->execute();
+    } catch (PDOException $e) {
+      echo $e->getMessage();
+    }
     return $this->db->rowCount();
   }
 

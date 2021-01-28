@@ -19,6 +19,38 @@ class Task_model {
     return $this->db->resultSet();
   }
 
+  public function getTaskStaff() {
+    $query = 'SELECT t.id, t.name, t.tgl_deadline, c.fullname as client, s.fullname as staff
+      from tasks as t 
+      inner join clients as c 
+      on t.client_id = c.id
+      inner join staffs as s
+      on t.staff_id = s.id
+      where t.staff_id = :id
+    ';
+
+    $this->db->query($query);
+    $this->db->bind('id', $_SESSION['user']['data_acc']['id']);
+    $this->db->execute();
+    return $this->db->resultSet();
+  }
+
+  public function getTaskClient() {
+    $query = 'SELECT t.id, t.name, t.tgl_deadline, c.fullname as client, s.fullname as staff
+      from tasks as t 
+      inner join clients as c 
+      on t.client_id = c.id
+      inner join staffs as s
+      on t.staff_id = s.id
+      where t.client_id = :id
+    ';
+
+    $this->db->query($query);
+    $this->db->bind('id', $_SESSION['user']['data_acc']['id']);
+    $this->db->execute();
+    return $this->db->resultSet();
+  }
+
   public function addTask($data) {
     $query = 'INSERT INTO tasks (name, description, tgl_deadline, client_id, staff_id) 
       VALUES (:name, :description, :tgl_deadline, :client_id, :staff_id)';
@@ -27,12 +59,12 @@ class Task_model {
       $this->db->bind('name', $data['name']);
       $this->db->bind('description', $data['description']);
       $this->db->bind('tgl_deadline', $data['tgl_deadline']);
-      $this->db->bind('client_id', $data['staff']);
-      $this->db->bind('staff_id', $data['client']);
+      $this->db->bind('client_id', $data['client']);
+      $this->db->bind('staff_id', $data['staff']);
 
       $this->db->execute();
     } catch (PDOException $e) {
-      echo $e->getMessage() + $data['tgl_deadline'];
+      echo $e->getMessage();
     }
 
     return $this->db->rowCount();

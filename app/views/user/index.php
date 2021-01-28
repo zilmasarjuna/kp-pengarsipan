@@ -79,6 +79,27 @@
           </div>
 
           <div class="form-group">
+            <label for="fullname">Nama Staff/Perusahaan</label>
+            <input type="text" class="form-control" id="fullname" name="fullname">
+          </div>
+
+          <div class="form-group">
+            <label for="no_telp">No Handphone</label>
+            <input type="text" class="form-control" id="no_telp" name="no_telp">
+          </div>
+
+          <div class="form-group">
+            <label for="address">Alamat</label>
+            <textarea 
+              class="form-control" 
+              aria-label="With textarea" 
+            name="address"
+              col="4"  
+              id="address"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
             <label for="role_id">Role</label>
             <select class="form-control" id="role_id" name="role_id"> 
               <option value="2">Staffs</option>

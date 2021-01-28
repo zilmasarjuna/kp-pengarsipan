@@ -3,9 +3,23 @@
     public function index() {
       Utils::PrivatePage();
 
-      $data['tasks'] = $this->model('Task_model')->getTask();
-      $data['clients'] = $this->model('User_model')->getClient();
-      $data['staffs'] = $this->model('User_model')->getStaff();
+      switch($_SESSION['user']['role_name']) {
+        case "konsultan": 
+          $data['tasks'] = $this->model('Task_model')->getTask();
+          $data['clients'] = $this->model('User_model')->getClient();
+          $data['staffs'] = $this->model('User_model')->getStaff();
+          break;
+        case "staff": 
+          $data['tasks'] = $this->model('Task_model')->getTaskStaff();
+          break;
+
+        case "clients": 
+          $data['tasks'] = $this->model('Task_model')->getTaskClient();
+          break;
+        default: 
+        $data['tasks'] = [];
+      }
+
       $this->view('template/header');
       $this->view('template/navigation');
       $this->view('tasks/index', $data);

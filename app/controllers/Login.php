@@ -15,9 +15,11 @@
         $_SESSION['status'] = 'login';
         $_SESSION['user_id'] = $data['user']['id'];
         $_SESSION['user'] = $data['user'];
+        print_r($_SESSION['user']);
         header('Location: '. BASEURL . '/dashboard');
       } else {
-        echo 'Tidak ada';
+        header('Location: '. BASEURL . '/dashboard');
+        Flasher::setError('Masukan username dan password dengan benar');
       }
     }
     

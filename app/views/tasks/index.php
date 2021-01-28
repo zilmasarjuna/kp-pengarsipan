@@ -21,42 +21,50 @@
           <h5>Tasks Management</h5>
         </div>
         <div class="card-toolbar">
+          <?php if ($_SESSION['user']['role_name'] === 'konsultan') echo '
           <button type="button" class="btn btn-primary font-weight-bolder addModalTask" data-toggle="modal" data-target="#formModal">
             New Record
-          </button>
+          </button>' ?>
         </div>
       </div>
       <div class="card-body">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Task</th>
-              <?php if ($_SESSION['user']['role_name'] !== 'staff') echo '<th>Staff</th>' ?>
-              <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<th>Client</th>' ?>
-              <th>Deadline</th>
-              <th>Status</th>
-              <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<th>Action</th>' ?>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach($data['tasks'] as $usr => $index) : ?>
+        <?php if (count($data['tasks']) > 0):?>
+          <table class="table">
+            <thead>
               <tr>
-                <td><?= $usr+1 ?></td>
-                <td><?= $data['tasks'][$usr]['name']; ?></td>
-                <?php if ($_SESSION['user']['role_name'] !== 'staff') echo '<td>'. $data['tasks'][$usr]['staff'] .'.</td>' ?>
-                <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<td>'. $data['tasks'][$usr]['client'] .'.</td>' ?>
+                <th>#</th>
+                <th>Task</th>
+                <?php if ($_SESSION['user']['role_name'] !== 'staff') echo '<th>Staff</th>' ?>
+                <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<th>Client</th>' ?>
+                <th>Deadline</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach($data['tasks'] as $usr => $index) : ?>
+                <tr>
+                  <td><?= $usr+1 ?></td>
+                  <td><?= $data['tasks'][$usr]['name']; ?></td>
+                  <?php if ($_SESSION['user']['role_name'] !== 'staff') echo '<td>'. $data['tasks'][$usr]['staff'] .'.</td>' ?>
+                  <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<td>'. $data['tasks'][$usr]['client'] .'.</td>' ?>
 
-                <td><?= $data['tasks'][$usr]['tgl_deadline']; ?></td>
-                <td><?= $data['tasks'][$usr]['tgl_deadline']; ?></td>
-                <?php if ($_SESSION['user']['role_name'] === 'konsultan') echo '<td><a href="'. BASEURL .'/tasks/delete/'. $data['tasks'][$usr]['id'] .'" class="badge badge-danger mr-1" onclick="return confirm("yakin?")">hapus</a>
-                    <a href="'. BASEURL .'/tasks/change/'. $data['tasks'][$usr]['id'] .'" class="badge badge-warning mr-1 modalUbahTask" data-toggle="modal" data-target="#formModal" data-id="'.$data['tasks'][$usr]['id'].'">Ubah</a></td>'; ?>
-              
-                <?php if ($_SESSION['user']['role_name'] === 'staff') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-warning modalUploadTask" data-toggle="modal" data-target="#formModalUpload" data-id="'.$data['tasks'][$usr]['id'].'">Upload</td>'; ?>
-            </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
+                  <td><?= $data['tasks'][$usr]['tgl_deadline']; ?></td>
+                  <?php if ($_SESSION['user']['role_name'] === 'konsultan') echo '<td><a href="'. BASEURL .'/tasks/delete/'. $data['tasks'][$usr]['id'] .'" class="badge badge-danger mr-1" onclick="return confirm("yakin?")">hapus</a>
+                      <a href="'. BASEURL .'/tasks/change/'. $data['tasks'][$usr]['id'] .'" class="badge badge-warning mr-1 modalUbahTask" data-toggle="modal" data-target="#formModal" data-id="'.$data['tasks'][$usr]['id'].'">Ubah</a><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadTask" data-toggle="modal" data-target="#formModalUpload" data-id="'.$data['tasks'][$usr]['id'].'">Detail</a></td>'; ?>
+                
+                  <?php if ($_SESSION['user']['role_name'] === 'staff') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadTask" data-toggle="modal" data-target="#formModalUpload" data-id="'.$data['tasks'][$usr]['id'].'">Upload</td>'; ?>
+                  <?php if ($_SESSION['user']['role_name'] === 'clients') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadTask" data-toggle="modal" data-target="#formModalUpload" data-id="'.$data['tasks'][$usr]['id'].'">Detail</td>'; ?>
+
+              </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        <?php else: ?>
+
+          <div class="alert alert-danger " role="alert">
+            Belum ada tugas
+          </div>
+        <?php endif ?>
       </div>
     </div>
   </div>
@@ -165,17 +173,19 @@
       <form action="<?= BASEURL; ?>/tasks/upload" method="post" class="form1" enctype="multipart/form-data">
         <div class="modal-body">
           <input hidden name="id" id="idUpload" >
-          <div class="button-wrap">
-            <label class="new-button" for="fileUpload"> Upload File</label>
-            <input type="file" id="fileUpload" name="fileUpload">
-          <div>
+          <?php if (($_SESSION['user']['role_name'] !== 'clients')): ?>
+            <div class="button-wrap">
+              <label class="new-button" for="fileUpload"> Upload File</label>
+              <input type="file" id="fileUpload" name="fileUpload">
+            <div>
+          <?php endif ?>
           <!-- <div class="fallback dz-message">
             <input type="file" id="fileUpload" name="fileUpload">
           </div> -->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save Data</button>
+          <?php if (($_SESSION['user']['role_name'] !== 'clients')) echo '<button type="submit" class="btn btn-primary">Save Data</button>'; ?>
         </div>
       </form>
     </div>

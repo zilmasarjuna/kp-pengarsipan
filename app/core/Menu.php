@@ -12,6 +12,9 @@ class Menu {
             <a href="'. BASEURL .'/tasks" class="nav-link py-4 px-6">Tasks</a>
           </li>
           <li class="nav-item mr-3">
+            <a href="'. BASEURL .'/user" class="nav-link py-4 px-6">Users</a>
+          </li>
+          <li class="nav-item mr-3">
             <a href="'. BASEURL .'/user/logout" class="nav-link py-4 px-6">Logout</a>
           </li>
         </ul>';
