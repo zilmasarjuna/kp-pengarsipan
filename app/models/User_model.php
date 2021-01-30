@@ -61,10 +61,33 @@ class User_model {
   }
 
   public function getUserById($id) {
-    $this->db->query('SELECT * FROM '. $this->table . ' WHERE id=:id');
-
+    $this->db->query('SELECT  
+      users.id, users.pasword , users.username, users.role_id, roles.name as role_name 
+      FROM users LEFT JOIN roles ON users.role_id = roles.id WHERE users.id= :id');
     $this->db->bind('id', $id);
-    return $this->db->single();
+    $this->db->execute();
+
+    $users =  $this->db->single();
+    if (!$users) {
+      return $users;
+    }
+    switch($users['role_name']) {
+      case 'staff':
+        $query = 'SELECT * from staffs where user_id = :id';
+        break;
+      case 'clients':
+        $query = 'SELECT * from clients where user_id = :id';
+        break;
+      default:
+        return $this->db->single();
+    } 
+    $this->db->query($query);
+    $this->db->bind('id', $users['id']);
+    $this->db->execute();
+
+    $dataAcc = $this->db->single();
+    $users['data_acc'] = $dataAcc;
+    return $users;
   }
 
   public function getList() {

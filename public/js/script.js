@@ -42,6 +42,7 @@ $(function() {
     $('.modal-footer button[type=submit]').html('Ubah Data');
     $('.form1').attr('action', 'http://localhost/mvc/public/user/ubah');
     var id = $(this).data('id');
+    $(".hidden").hide();
     $.ajax({
       url: 'http://localhost/mvc/public/user/getubah',
       data: {
@@ -53,6 +54,9 @@ $(function() {
         $("#username").val(data.username);
         $("#password").val(data.pasword);
         $("#role_id").val(data.role_id);
+        $("#fullname").val(data.data_acc.fullname);
+        $("#no_telp").val(data.data_acc.no_telp);
+        $("#address").val(data.data_acc.address);
         $("#id").val(data.id);
       }
     });
@@ -110,7 +114,7 @@ $(function() {
         $("#task_tgl").text(data.tgl_deadline);
 
         $.fn.addNewRow = function (row) {
-          $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download>"+ row.filename +"</a></li>");
+          $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download>"+ row.filename +"</a></li>");
         }
 
         if (data.files.length === 0) {

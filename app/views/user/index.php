@@ -26,30 +26,36 @@
         </div>
       </div>
       <div class="card-body">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Username</th>
-              <th>Role User</th>
-              <th>Action</th>      
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach($data['user'] as $usr => $index) : ?>
+        <?php if (count($data['user']) > 0): ?>
+          <table class="table">
+            <thead>
               <tr>
-                <td><?= $usr+1 ?></td>
-                <td><?= $data['user'][$usr]['username']; ?></td>
-                <td><?= $data['user'][$usr]['name']; ?></td>
-                <td>
-                  <a href="<?= BASEURL; ?>/user/delete/<?= $data['user'][$usr]['id']; ?>" class="badge badge-danger mr-1" onclick="return confirm('yakin?')">hapus</a>
-                  <a href="<?= BASEURL; ?>/user/change/<?= $data['user'][$usr]['id']; ?>" class="badge badge-warning mr-1 modalUbahUser" data-toggle="modal" data-target="#formModal" data-id="<?= $data['user'][$usr]['id']; ?>">Ubah</a>
-                </button>
-                </td>
+                <th>#</th>
+                <th>Username</th>
+                <th>Role User</th>
+                <th>Action</th>      
               </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <?php foreach($data['user'] as $usr => $index) : ?>
+                <tr>
+                  <td><?= $usr+1 ?></td>
+                  <td><?= $data['user'][$usr]['username']; ?></td>
+                  <td><?= $data['user'][$usr]['name']; ?></td>
+                  <td>
+                    <a href="<?= BASEURL; ?>/user/delete/<?= $data['user'][$usr]['id']; ?>" class="badge badge-danger mr-1" onclick="return confirm('yakin?')">hapus</a>
+                    <a href="<?= BASEURL; ?>/user/change/<?= $data['user'][$usr]['id']; ?>" class="badge badge-warning mr-1 modalUbahUser" data-toggle="modal" data-target="#formModal" data-id="<?= $data['user'][$usr]['id']; ?>">Ubah</a>
+                  </button>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        <?php else: ?>
+          <div class="alert alert-danger " role="alert">
+            Belum ada user
+          </div>
+        <?php endif ?>
       </div>
     </div>
   </div>
@@ -78,17 +84,17 @@
             <input type="password" class="form-control" id="password" name="password">
           </div>
 
-          <div class="form-group">
+          <div class="form-group hidden">
             <label for="fullname">Nama Staff/Perusahaan</label>
             <input type="text" class="form-control" id="fullname" name="fullname">
           </div>
 
-          <div class="form-group">
+          <div class="form-group hidden">
             <label for="no_telp">No Handphone</label>
             <input type="text" class="form-control" id="no_telp" name="no_telp">
           </div>
 
-          <div class="form-group">
+          <div class="form-group hidden">
             <label for="address">Alamat</label>
             <textarea 
               class="form-control" 
@@ -99,7 +105,7 @@
             ></textarea>
           </div>
 
-          <div class="form-group">
+          <div class="form-group hidden">
             <label for="role_id">Role</label>
             <select class="form-control" id="role_id" name="role_id"> 
               <option value="2">Staffs</option>
