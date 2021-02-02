@@ -5,49 +5,99 @@ class Task_model {
     $this->db = new Database;
   }
 
-  public function getTask() {
-    $query = 'SELECT t.id, t.name, t.tgl_deadline, c.fullname as client, s.fullname as staff
-      from tasks as t 
-      inner join clients as c 
-      on t.client_id = c.id
-      inner join staffs as s
-      on t.staff_id = s.id
-    ';
+  public function getTask($limit = null) {
+    if (!$limit) {
+      $query = 'SELECT t.id, t.name, DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+        from tasks as t 
+        inner join clients as c 
+        on t.client_id = c.id
+        inner join staffs as s
+        on t.staff_id = s.id
+      ';
+      $this->db->query($query);
+      $this->db->execute();
+    } else {
+      $query = 'SELECT t.id, t.name, DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+        from tasks as t 
+        inner join clients as c 
+        on t.client_id = c.id
+        inner join staffs as s
+        on t.staff_id = s.id
+        LIMIT :limit
+      ';
 
-    $this->db->query($query);
-    $this->db->execute();
+      $this->db->query($query);
+      $this->db->bind('limit', $limit);
+      $this->db->execute();
+    }
+    
     return $this->db->resultSet();
   }
 
-  public function getTaskStaff() {
-    $query = 'SELECT t.id, t.name, t.tgl_deadline, c.fullname as client, s.fullname as staff
-      from tasks as t 
-      inner join clients as c 
-      on t.client_id = c.id
-      inner join staffs as s
-      on t.staff_id = s.id
-      where t.staff_id = :id
-    ';
+  public function getTaskStaff($limit = null) {
+    if (!$limit) {
+      $query = 'SELECT t.id, t.name,  DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+        from tasks as t 
+        inner join clients as c 
+        on t.client_id = c.id
+        inner join staffs as s
+        on t.staff_id = s.id
+        where t.staff_id = :id
+      ';
 
-    $this->db->query($query);
-    $this->db->bind('id', $_SESSION['user']['data_acc']['id']);
-    $this->db->execute();
+      $this->db->query($query);
+      $this->db->bind('id', $_SESSION['user']['data_acc']['id']);
+      $this->db->execute();
+    } else {
+      $query = 'SELECT t.id, t.name,  DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+        from tasks as t 
+        inner join clients as c 
+        on t.client_id = c.id
+        inner join staffs as s
+        on t.staff_id = s.id
+        where t.staff_id = :id
+        LIMIT :limit
+      ';
+
+      $this->db->query($query);
+      $this->db->bind('id', $_SESSION['user']['data_acc']['id']);
+      $this->db->bind('limit', $limit);
+      $this->db->execute();
+    }
     return $this->db->resultSet();
   }
 
-  public function getTaskClient() {
-    $query = 'SELECT t.id, t.name, t.tgl_deadline, c.fullname as client, s.fullname as staff
-      from tasks as t 
-      inner join clients as c 
-      on t.client_id = c.id
-      inner join staffs as s
-      on t.staff_id = s.id
-      where t.client_id = :id
-    ';
+  public function getTaskClient($limit = null) {
+    if (!$limit) {
+      $query = 'SELECT t.id, t.name,  DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+        from tasks as t 
+        inner join clients as c 
+        on t.client_id = c.id
+        inner join staffs as s
+        on t.staff_id = s.id
+        where t.client_id = :id
+      ';
 
-    $this->db->query($query);
-    $this->db->bind('id', $_SESSION['user']['data_acc']['id']);
-    $this->db->execute();
+      $this->db->query($query);
+      $this->db->bind('id', $_SESSION['user']['data_acc']['id']);
+      $this->db->execute();
+    } else {
+      $query = 'SELECT t.id, t.name,  DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+        from tasks as t 
+        inner join clients as c 
+        on t.client_id = c.id
+        inner join staffs as s
+        on t.staff_id = s.id
+        where t.client_id = :id
+        LIMIT :limit
+      ';
+
+      $this->db->query($query);
+      $this->db->bind('id', $_SESSION['user']['data_acc']['id']);
+      $this->db->bind('limit', $limit);
+      $this->db->execute();
+    }
+    
     return $this->db->resultSet();
   }
 

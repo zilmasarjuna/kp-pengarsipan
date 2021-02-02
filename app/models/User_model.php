@@ -99,6 +99,16 @@ class User_model {
     return $this->db->resultSet();
   }
 
+  public function getListDashboard() {
+    $query = 'SELECT users.id, users.username, roles.name  FROM users LEFT JOIN roles ON users.role_id = roles.id where users.id != :id LIMIT 5';
+
+
+    $this->db->query($query);
+    $this->db->bind('id', Utils::GetUserId());
+
+    return $this->db->resultSet();
+  }
+
   public function addUser($data) {
     $queryUser = "INSERT INTO users (username, pasword, role_id) VALUES(:username, :password, :role_id)";
     $queryClient = "INSERT INTO clients (user_id, fullname, address, no_telp) VALUES(:user_id, :fullname, :address, :no_telp)";
