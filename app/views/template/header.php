@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="<?= BASEURL; ?>/css/basic.css" />
   <link rel="stylesheet" href="<?= BASEURL; ?>/css/dropzone.css" />
   <link rel="stylesheet" href="<?= BASEURL; ?>/css/styles.css" />
+  <link href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
   <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body>

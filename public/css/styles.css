@@ -55,6 +55,55 @@ input[type="file"] {
   padding: 0;
 }
 
+.list-file li {
+  margin-bottom: 10px;
+  padding: 10px 10px;
+  border-radius: 5px;
+  border: 1px solid #eee
+}
+
+.list-file li a {
+  /* background: #eee; */
+  flex-flow: row wrap;
+}
+
+.list-file li a > div{
+  width: 100%;
+  color: #212529;
+}
+
+.list-file li a > div span{
+  font-size: 10px;
+  color: #7e8299;
+}
+
+
+table.dataTable thead th, table.dataTable thead td {
+  border-bottom: 1px solid #dee2e6!important;
+}
+
+.title-export {
+  text-align: center;
+  margin-bottom: 40px;
+  margin-top: 10px;
+}
+
+.title-export h5 {
+  font-size: 20px;
+}
+
+.dataTables_wrapper .dataTables_filter {
+  float: right;
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+table.dataTable.no-footer {
+  border-bottom: 1px solid #dee2e6!important;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
 .btn.btn-hover-transparent-white {
   color: #fff;
   background-color: transparent;
@@ -69,6 +118,18 @@ btn.btn-hover-transparent-white.focus:not(.btn-text), .btn.btn-hover-transparent
   color: #fff;
   background-color: rgba(255,255,255,.1);
   border-color: transparent;
+}
+
+table.dataTable.stripe tbody tr.odd, table.dataTable.display tbody tr.odd {
+  background: #fff!important;
+}
+
+table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd>.sorting_1 {
+  background-color: #fff!important;
+}
+
+table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
+  background-color: #fff!important;
 }
 
 .btn-light-primary {
@@ -94,6 +155,17 @@ btn.btn-hover-transparent-white.focus:not(.btn-text), .btn.btn-hover-transparent
   }
 }
 
+.dropdown-menu.show {
+  background: #3699ff;
+  border: none;
+}
+
+.dropdown-item {
+  font-weight: 500;
+  opacity: .8;
+  color: #fff;
+}
+
 @media (min-width: 992px) {
   .header-top {
     display: -webkit-box;
@@ -102,7 +174,7 @@ btn.btn-hover-transparent-white.focus:not(.btn-text), .btn.btn-hover-transparent
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    height: 70px;
+    height: 66px;
     background-color: #3699ff;
   }
 

@@ -34,6 +34,46 @@ class Task_model {
     return $this->db->resultSet();
   }
 
+  public function getTaskExport($limit = null) {
+    if (!$limit) {
+      $query = 'SELECT t.id, 
+        t.name, 
+        DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, 
+        DATE_FORMAT(t.created_at, "%d %M %Y") as tgl_created, 
+        c.fullname as client, 
+        s.fullname as staff,
+        f.filename
+            from tasks as t 
+            inner join clients as c 
+            on t.client_id = c.id
+            inner join staffs as s
+            on t.staff_id = s.id
+            left join files as f
+            on f.task_id = t.id
+        WHERE created_at BETWEEN :date_from AND :date_to
+      ';
+      $this->db->query($query);
+      $this->db->bind('date_from', $_POST['from_date']);
+      $this->db->bind('date_to', $_POST['to_date']);
+      $this->db->execute();
+    } else {
+      $query = 'SELECT t.id, t.name, DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+        from tasks as t 
+        inner join clients as c 
+        on t.client_id = c.id
+        inner join staffs as s
+        on t.staff_id = s.id
+        LIMIT :limit
+      ';
+
+      $this->db->query($query);
+      $this->db->bind('limit', $limit);
+      $this->db->execute();
+    }
+    
+    return $this->db->resultSet();
+  }
+
   public function getTaskStaff($limit = null) {
     if (!$limit) {
       $query = 'SELECT t.id, t.name,  DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
@@ -102,8 +142,8 @@ class Task_model {
   }
 
   public function addTask($data) {
-    $query = 'INSERT INTO tasks (name, description, tgl_deadline, client_id, staff_id) 
-      VALUES (:name, :description, :tgl_deadline, :client_id, :staff_id)';
+    $query = 'INSERT INTO tasks (name, description, tgl_deadline, client_id, staff_id, created_at) 
+      VALUES (:name, :description, :tgl_deadline, :client_id, :staff_id, NOW())';
     $this->db->query($query);
     try {
       $this->db->bind('name', $data['name']);
@@ -159,7 +199,7 @@ class Task_model {
     $this->db->bind('id', $id);
     $task = $this->db->single();
 
-    $query = 'SELECT * from files where task_id = :id';
+    $query = 'SELECT * from files as f inner join users as u on u.id = f.user_id where task_id = :id';
 
     $this->db->query($query);
     $this->db->bind('id', $task['id']);
@@ -178,6 +218,4 @@ class Task_model {
     $this->db->execute();
     return $this->db->rowCount();
   }
-
- 
 }

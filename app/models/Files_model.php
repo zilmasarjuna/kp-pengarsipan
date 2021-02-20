@@ -8,7 +8,7 @@ class Files_model {
   }
 
   public function saveFile($filename, $name) {
-    $query = 'INSERT INTO files (filename, path_name , task_id) VALUES (:name, :filename, :task)';
+    $query = 'INSERT INTO files (filename, path_name , task_id, date_created) VALUES (:name, :filename, :task, NOW())';
     $this->db->query($query);
 
     try {

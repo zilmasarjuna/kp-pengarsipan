@@ -27,7 +27,7 @@
       </div>
       <div class="card-body">
         <?php if (count($data['user']) > 0): ?>
-          <table class="table">
+          <table class="table display nowrap" id="example">
             <thead>
               <tr>
                 <th>#</th>

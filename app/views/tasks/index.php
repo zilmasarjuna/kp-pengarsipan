@@ -21,7 +21,10 @@
           <h5>Tasks Management</h5>
         </div>
         <div class="card-toolbar">
-          <?php if ($_SESSION['user']['role_name'] === 'konsultan') echo '
+        <?php if ($_SESSION['user']['role_name'] === 'konsultan') echo ' 
+          <button type="button" class="btn btn-primary font-weight-bolder cetakModal mr-3" data-toggle="modal" data-target="#formModalCetak">
+            Cetak Data
+          </button>
           <button type="button" class="btn btn-primary font-weight-bolder addModalTask" data-toggle="modal" data-target="#formModal">
             New Record
           </button>' ?>
@@ -29,7 +32,7 @@
       </div>
       <div class="card-body">
         <?php if (count($data['tasks']) > 0):?>
-          <table class="table">
+          <table class="table display nowrap" id="example">
             <thead>
               <tr>
                 <th>#</th>
@@ -87,7 +90,6 @@
             <label for="name">Nama Task</label>
             <input type="text" class="form-control" id="name" name="name">
           </div>
-
           
           <div class="form-group">
             <label for="description">Deskripsi</label>
@@ -165,7 +167,6 @@
           <div class="col-md-12">
             <label class="font-weight-bold">Files</label>
             <ul id="listData" class="list-file">
-              
             </ul>
           </div>
         </div>
@@ -177,7 +178,7 @@
             <div class="button-wrap">
               <label class="new-button" for="fileUpload"> Upload File</label>
               <input type="file" id="fileUpload" name="fileUpload">
-            <div>
+          </div>
           <?php endif ?>
           <!-- <div class="fallback dz-message">
             <input type="file" id="fileUpload" name="fileUpload">
@@ -186,6 +187,50 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <?php if (($_SESSION['user']['role_name'] !== 'clients')) echo '<button type="submit" class="btn btn-primary">Save Data</button>'; ?>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="formModalCetak" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="formModalLabel">Cetak Data</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form 
+        action="<?= BASEURL; ?>/tasks/export" 
+        method="post" 
+        class="form1"
+        target="_blank"
+      >
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="from_date">Dari</label>
+            <input 
+              class="form-control" 
+              name="from_date" 
+              type="date" 
+              id="from_date" 
+            />
+          </div>
+          <div class="form-group">
+            <label for="from_date">Sampai</label>
+            <input 
+              class="form-control" 
+              name="to_date" 
+              type="date" 
+              id="from_date" 
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <?php if (($_SESSION['user']['role_name'] !== 'clients')) echo '<button type="submit" class="btn btn-primary">Cetak</button>'; ?>
         </div>
       </form>
     </div>

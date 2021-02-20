@@ -26,6 +26,29 @@
       $this->view('template/footer');
     }
 
+    public function export() {
+      Utils::PrivatePage();
+      switch($_SESSION['user']['role_name']) {
+        case "konsultan": 
+          $data['tasks'] = $this->model('Task_model')->getTaskExport();
+          $data['clients'] = $this->model('User_model')->getClient();
+          $data['staffs'] = $this->model('User_model')->getStaff();
+          break;
+        case "staff": 
+          $data['tasks'] = $this->model('Task_model')->getTaskStaff();
+          break;
+
+        case "clients": 
+          $data['tasks'] = $this->model('Task_model')->getTaskClient();
+          break;
+        default: 
+        $data['tasks'] = [];
+      }
+
+      $data['post'] = $_POST;
+      $this->view('tasks/export', $data);
+    }
+
     public function add() {
       Utils::PrivatePage();
       if ($this->model('Task_model')->addTask($_POST) > 0) {
