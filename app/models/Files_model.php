@@ -23,4 +23,30 @@ class Files_model {
 
     return $this->db->rowCount();
   }
+
+  public function showFile($id) {
+    $query = 'SELECT * FROM files WHERE id= :id';
+
+    try {
+      $this->db->query($query);
+      $this->db->bind('id', $id);
+      $this->db->execute();
+    } catch (PDOException $e) {
+      echo $e->getMessage();
+    }
+    return $this->db->single();
+  }
+
+  public function deleteFile($id) {
+    $query = 'SELECT FROM files WHERE id= :id';
+
+    try {
+      $this->db->query($query);
+      $this->db->bind('id', $id);
+      $this->db->execute();
+    } catch (PDOException $e) {
+      echo $e->getMessage();
+    }
+    return $this->db->single();
+  }
 }

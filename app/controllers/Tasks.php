@@ -1,9 +1,5 @@
 <?php
 
-  
-
-
-
   class Tasks extends Controller {
     public function index() {
       Utils::PrivatePage();
@@ -25,29 +21,29 @@
         $data['tasks'] = [];
       }
       
-      $mail = new PHPMailer();
+      // $mail = new PHPMailer();
 
-      $mail->IsSMTP();
-      $mail->Host = "smtp.gmail.com";
-      $mail->SMTPAuth = true;
-      $mail->Username = "zilmasarjuna12@gmail.com";
-      $mail->Password = "zilmas123@";
-      $mail->Port = 465;
-      $mail->SMTPSecure = "ssl";
+      // $mail->IsSMTP();
+      // $mail->Host = "smtp.gmail.com";
+      // $mail->SMTPAuth = true;
+      // $mail->Username = "zilmasarjuna12@gmail.com";
+      // $mail->Password = "zilmas123@";
+      // $mail->Port = 465;
+      // $mail->SMTPSecure = "ssl";
 
-      $mail->isHTML(true);  
-      $mail->SetFrom("zilmasarjuna12@gmail.com", "Zilmas Arjuna");
-      $mail->AddAddress("zilmas.sutrisno@ottodigital.id");
+      // $mail->isHTML(true);  
+      // $mail->SetFrom("zilmasarjuna12@gmail.com", "Zilmas Arjuna");
+      // $mail->AddAddress("zilmas.sutrisno@ottodigital.id");
 
-      $mail->Subject = "asdasd";
-			$mail->Body    = '<div style="border:2px solid red;">This is the HTML message body <b>in bold!</b></div>';
+      // $mail->Subject = "asdasd";
+			// $mail->Body    = '<div style="border:2px solid red;">This is the HTML message body <b>in bold!</b></div>';
 
-      if(!$mail->send()) {
-        echo 'Message could not be sent.';
-        echo 'Mailer Error: ' . $mail->ErrorInfo;
-      } else {
-          echo 'Message has been sent';
-      }
+      // if(!$mail->send()) {
+      //   echo 'Message could not be sent.';
+      //   echo 'Mailer Error: ' . $mail->ErrorInfo;
+      // } else {
+      //     echo 'Message has been sent';
+      // }
       $this->view('template/header');
       $this->view('template/navigation');
       $this->view('tasks/index', $data);
@@ -142,5 +138,28 @@
       } else {
         echo "Upload Gagal!";
       }
+    }
+
+    public function deleteFile($id) {
+      $data = $this->model('Files_model')->showFile($id);
+      $myFile = ".".$data['path_name'];
+      $myFileLink = fopen($myFile, 'w') or die("can't open file");
+      fclose($myFileLink);
+      unlink($myFile) or die("Couldn't delete file");
+      //delete file 
+
+      // lanjutkan delete data in database
+
+      // print_r($data);
+
+      // if ($this->model('Files_model')->deleteFile($id) > 0) {
+      //   Flasher::setFlash('berhasil', 'dihapus', 'success', 'File');
+      //   header('Location: ' . BASEURL . '/tasks');
+      //   exit;
+      // } else {
+      //   Flasher::setFlash('gagal', 'dihapus', 'danger', 'File');
+      //   header('Location: ' . BASEURL . '/tasks');
+      //   exit;
+      // }
     }
   }

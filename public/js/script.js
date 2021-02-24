@@ -114,7 +114,7 @@ $(function() {
         $("#task_tgl").text(data.tgl_deadline);
 
         $.fn.addNewRow = function (row) {
-          $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ getDate(row.date_created) +" -  "+ row.username +"</span></div></a></li>");
+          $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ getDate(row.date_created) +" -  "+ row.username +"</span></div></a><a href='"+window.location.origin+"/mvc/public/tasks/deleteFile/"+row.id+"' class='badge badge-danger'>Delete</a></li>");
         }
 
         if (data.files.length === 0) {

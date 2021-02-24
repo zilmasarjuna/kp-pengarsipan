@@ -199,7 +199,7 @@ class Task_model {
     $this->db->bind('id', $id);
     $task = $this->db->single();
 
-    $query = 'SELECT * from files as f inner join users as u on u.id = f.user_id where task_id = :id';
+    $query = 'SELECT f.id, f.filename, f.date_created, f.task_id, f.path_name, f.user_id, u.username from files as f inner join users as u on u.id = f.user_id where task_id = :id';
 
     $this->db->query($query);
     $this->db->bind('id', $task['id']);
