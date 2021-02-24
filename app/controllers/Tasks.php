@@ -1,4 +1,9 @@
 <?php
+
+  
+
+
+
   class Tasks extends Controller {
     public function index() {
       Utils::PrivatePage();
@@ -19,7 +24,30 @@
         default: 
         $data['tasks'] = [];
       }
+      
+      $mail = new PHPMailer();
 
+      $mail->IsSMTP();
+      $mail->Host = "smtp.gmail.com";
+      $mail->SMTPAuth = true;
+      $mail->Username = "zilmasarjuna12@gmail.com";
+      $mail->Password = "zilmas123@";
+      $mail->Port = 465;
+      $mail->SMTPSecure = "ssl";
+
+      $mail->isHTML(true);  
+      $mail->SetFrom("zilmasarjuna12@gmail.com", "Zilmas Arjuna");
+      $mail->AddAddress("zilmas.sutrisno@ottodigital.id");
+
+      $mail->Subject = "asdasd";
+			$mail->Body    = '<div style="border:2px solid red;">This is the HTML message body <b>in bold!</b></div>';
+
+      if(!$mail->send()) {
+        echo 'Message could not be sent.';
+        echo 'Mailer Error: ' . $mail->ErrorInfo;
+      } else {
+          echo 'Message has been sent';
+      }
       $this->view('template/header');
       $this->view('template/navigation');
       $this->view('tasks/index', $data);
@@ -96,7 +124,12 @@
 
       $dirUpload = "./file/task/";
       $terupload = move_uploaded_file($nameSementara, $dirUpload.$nameFile);
+      $msg = "First line of text\nSecond line of text";
 
+      $msg = wordwrap($msg,70);
+
+      // send email
+      mail("zilmasarjuna12@gmail.com","My subject",$msg);
       if ($terupload) {
         $filename = '/file/task/'.$nameFile;
         if ($this->model('Files_model')->saveFile($filename, $nameFile) > 0) {
