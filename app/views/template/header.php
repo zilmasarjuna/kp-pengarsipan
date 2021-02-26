@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Halaman <?= $data['judul'] ?></title>
+  <script> 
+    var session = <?= json_encode($_SESSION['user']); ?>;
+    console.log('asd', session);
+  </script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700">
   <link rel="stylesheet" href="<?= BASEURL; ?>/css/bootstrap.css" />
   <link rel="stylesheet" href="<?= BASEURL; ?>/css/basic.css" />

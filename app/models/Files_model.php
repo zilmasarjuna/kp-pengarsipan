@@ -38,7 +38,7 @@ class Files_model {
   }
 
   public function deleteFile($id) {
-    $query = 'SELECT FROM files WHERE id= :id';
+    $query = 'DELETE FROM files WHERE id= :id';
 
     try {
       $this->db->query($query);
@@ -47,6 +47,6 @@ class Files_model {
     } catch (PDOException $e) {
       echo $e->getMessage();
     }
-    return $this->db->single();
+    return $this->db->rowCount();
   }
 }

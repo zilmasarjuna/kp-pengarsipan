@@ -145,21 +145,16 @@
       $myFile = ".".$data['path_name'];
       $myFileLink = fopen($myFile, 'w') or die("can't open file");
       fclose($myFileLink);
-      unlink($myFile) or die("Couldn't delete file");
-      //delete file 
-
-      // lanjutkan delete data in database
-
-      // print_r($data);
-
-      // if ($this->model('Files_model')->deleteFile($id) > 0) {
-      //   Flasher::setFlash('berhasil', 'dihapus', 'success', 'File');
-      //   header('Location: ' . BASEURL . '/tasks');
-      //   exit;
-      // } else {
-      //   Flasher::setFlash('gagal', 'dihapus', 'danger', 'File');
-      //   header('Location: ' . BASEURL . '/tasks');
-      //   exit;
-      // }
+      
+      if ($this->model('Files_model')->deleteFile($id) > 0) {
+        Flasher::setFlash('berhasil', 'dihapus', 'success', 'File');
+        unlink($myFile);
+        header('Location: ' . BASEURL . '/tasks');
+        exit;
+      } else {
+        Flasher::setFlash('gagal', 'dihapus', 'danger', 'File');
+        header('Location: ' . BASEURL . '/tasks');
+        exit;
+      }
     }
   }
