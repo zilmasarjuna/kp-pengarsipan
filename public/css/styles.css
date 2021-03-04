@@ -255,6 +255,12 @@ table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.s
   border:none;
 }
 
+.card-title h5 span {
+  font-weight: normal;
+  font-size: 12px;
+  display: block;
+}
+
 .card-title {
   display: -webkit-box;
   display: -ms-flexbox;

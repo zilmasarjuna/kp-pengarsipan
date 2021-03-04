@@ -98,9 +98,11 @@ $(function() {
   })
 
   $('.modalUploadTask').on('click', function() {
-    console.log('asd', session);
     var id = $(this).data('id');
+    $("#idTask").val(id);
     $("#listData").children().remove();
+    $("#listDataFeedback").children().remove();
+    $('.modal-footer button[type=submit]').html('Save Data');
     $.ajax({
       url: 'http://localhost/mvc/public/tasks/getubah',
       data: {
@@ -115,10 +117,31 @@ $(function() {
         $("#task_tgl").text(data.tgl_deadline);
 
         $.fn.addNewRow = function (row) {
-          if (session.role_name === 'konsultan' || session.role_name === 'staff') {
-            $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ getDate(row.date_created) +" -  "+ row.username +"</span></div></a><a href='"+window.location.origin+"/mvc/public/tasks/deleteFile/"+row.id+"' class='badge badge-danger'>Delete</a></li>");
-          } else {
-            $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ getDate(row.date_created) +" -  "+ row.username +"</span></div></a></li>");
+          var status = row.show_client === "1" ? "- ditampilkan client" : "- tidak ditampilkan client";
+          switch(session.role_name) {
+            case 'konsultan':
+              $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ row.date_created +" -  " + row.username +" " + status + "</span></div></a><a href='"+window.location.origin+"/mvc/public/tasks/deleteFile/"+row.id+"' class='badge badge-danger mr-2'>Delete</a><a href='"+window.location.origin+"/mvc/public/tasks/showFileClient/"+row.id+"' class='badge badge-success'>tampilkan ke client</a></li>");
+              break;
+            case 'staff':
+              $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ row.date_created +" -  "+ row.username +"</span></div></a></li>");
+              break;
+            default:
+              $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ row.date_created +"</span></div></a></li>");
+              break;
+          }
+        }
+
+        $.fn.addNewFeedbackRow = function (row) {
+          switch(session.role_name) {
+            case 'konsultan':
+              $(this).append("<li>"+ row.description +"</li>");
+              break;
+            case 'staff':
+              $(this).append("<li>"+ row.description +"</li>");
+              break;
+            default:
+              $(this).append("<li>"+ row.description +"</li>");
+              break;
           }
         }
 
@@ -127,6 +150,70 @@ $(function() {
         }
         for (var i = 0; i < data.files.length; i++) {
           $("#listData").addNewRow(data.files[i]);
+        }
+        for (var i = 0; i < data.feedback.length; i++) {
+          $("#listDataFeedback").addNewFeedbackRow(data.feedback[i]);
+        }
+      }
+    });
+  });
+
+  $('.modalUploadClientTask').on('click', function() {
+    var id = $(this).data('id');
+    $("#idTask").val(id);
+    $("#listDataBerkas").children().remove();
+    $("#listDataFeedback").children().remove();
+    $('.modal-footer button[type=submit]').html('Save Data');
+    $.ajax({
+      url: 'http://localhost/mvc/public/tasks/getubahberkas',
+      data: {
+        id: id,
+      },
+      method: 'post',
+      dataType: 'json',
+      success: function(data) {
+        $("#idUpload").val(data.id);
+        $("#task_name").text(data.name);
+        $("#task_description").text(data.description);
+        $("#task_tgl").text(data.tgl_deadline);
+
+        $.fn.addNewRow = function (row) {
+          var status = row.show_client === "1" ? "- ditampilkan client" : "- tidak ditampilkan client";
+          switch(session.role_name) {
+            case 'konsultan':
+              $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ row.date_created +" -  " + row.username +" " + status + "</span></div></a><a href='"+window.location.origin+"/mvc/public/tasks/deleteFile/"+row.id+"' class='badge badge-danger mr-2'>Delete</a><a href='"+window.location.origin+"/mvc/public/tasks/showFileClient/"+row.id+"' class='badge badge-success'>tampilkan ke client</a></li>");
+              break;
+            case 'staff':
+              $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ row.date_created +" -  "+ row.username +"</span></div></a></li>");
+              break;
+            default:
+              $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ row.date_created +"</span></div></a></li>");
+              break;
+          }
+        }
+
+        $.fn.addNewFeedbackRow = function (row) {
+          switch(session.role_name) {
+            case 'konsultan':
+              $(this).append("<li>"+ row.description +"</li>");
+              break;
+            case 'staff':
+              $(this).append("<li>"+ row.description +"</li>");
+              break;
+            default:
+              $(this).append("<li>"+ row.description +"</li>");
+              break;
+          }
+        }
+
+        if (data.files.length === 0) {
+          $("#listDataBerkas").append("<li class='text-danger'>File masih kosong</li>");
+        }
+        for (var i = 0; i < data.files.length; i++) {
+          $("#listDataBerkas").addNewRow(data.files[i]);
+        }
+        for (var i = 0; i < data.feedback.length; i++) {
+          $("#listDataFeedback").addNewFeedbackRow(data.feedback[i]);
         }
       }
     });
@@ -185,7 +272,6 @@ $(document).ready(function() {
 });
 
 function getDate(date) {
-  console.log('ads', date)
   var d = new Date(date);
   var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
@@ -194,5 +280,4 @@ function getDate(date) {
 
   return datestring;
 }
-
 

@@ -7,3 +7,15 @@
 .title-export h5 {
   font-size: 20px;
 }
+
+.container-print {
+  padding: 0 50px;
+}
+
+.container-print td {
+  font-size: 14px!important;
+}
+
+.container-print th {
+  font-size: 16px!important;
+}

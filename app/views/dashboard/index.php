@@ -1,5 +1,22 @@
 <div class="dashboard">
   <div class="container mt-5">
+    <?php if (($_SESSION['user']['role_name'] !== 'konsultan')): ?>
+      <div class="row">
+        <div class="col-md-12 mb-4">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <?php if ($_SESSION['user']['role_name'] !== 'konsultan') echo '<h5>Selamat datang, '. $_SESSION['user']['data_acc']['fullname'] .'. <span>Apabila mengalami masalah dengan penggunaan sistem. Silahkan hubungi no. 081293373212</span></h5>' ?>
+                <?php if ($_SESSION['user']['role_name'] === 'konsultan') echo '<h5>Selamat datang</h5>' ?>
+              </div>
+            </div>
+            <!-- <div class="card-body">
+              <p>Apabila mengalami masalah dengan penggunaan sistem. Silahkan hubungi no. 081293373212</p>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    <?php endif ?>
     <div class="row">
       <?php if (($_SESSION['user']['role_name'] === 'konsultan')): ?>
         <div class="col-md-6">
@@ -58,7 +75,7 @@
                   <tr>
                     <th>#</th>
                     <th>Task</th>
-                    <?php if ($_SESSION['user']['role_name'] !== 'staff') echo '<th>Staff</th>' ?>
+                    <?php if ($_SESSION['user']['role_name'] === 'konsultan') echo '<th>Staff</th>' ?>
                     <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<th>Client</th>' ?>
                     <th>Deadline</th>
                   </tr>
@@ -68,7 +85,7 @@
                     <tr>
                       <td><?= $usr+1 ?></td>
                       <td><?= $data['tasks'][$usr]['name']; ?></td>
-                      <?php if ($_SESSION['user']['role_name'] !== 'staff') echo '<td>'. $data['tasks'][$usr]['staff'] .'.</td>' ?>
+                      <?php if ($_SESSION['user']['role_name'] === 'konsultan') echo '<td>'. $data['tasks'][$usr]['staff'] .'.</td>' ?>
                       <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<td>'. $data['tasks'][$usr]['client'] .'.</td>' ?>
 
                       <td><?= $data['tasks'][$usr]['tgl_deadline']; ?></td>

@@ -90,6 +90,10 @@
       echo json_encode($this->model('Task_model')->getTaskById($_POST['id']));
     }
 
+    public function getubahberkas() {
+      echo json_encode($this->model('Task_model')->getTaskByIdBerkas($_POST['id']));
+    }
+
     public function delete($id) {
       if ($this->model('Task_model')->deleteTask($id) > 0) {
         Flasher::setFlash('berhasil', 'dihapus', 'success', 'Task');
@@ -120,12 +124,7 @@
 
       $dirUpload = "./file/task/";
       $terupload = move_uploaded_file($nameSementara, $dirUpload.$nameFile);
-      $msg = "First line of text\nSecond line of text";
 
-      $msg = wordwrap($msg,70);
-
-      // send email
-      mail("zilmasarjuna12@gmail.com","My subject",$msg);
       if ($terupload) {
         $filename = '/file/task/'.$nameFile;
         if ($this->model('Files_model')->saveFile($filename, $nameFile) > 0) {
@@ -137,6 +136,40 @@
         }
       } else {
         echo "Upload Gagal!";
+      }
+    }
+
+    public function uploadBerkas() {
+      $nameFile = $_FILES['fileUpload']['name'];
+      $nameSementara = $_FILES['fileUpload']['tmp_name'];
+
+      $dirUpload = "./file/task/";
+      $terupload = move_uploaded_file($nameSementara, $dirUpload.$nameFile);
+
+      if ($terupload) {
+        $filename = '/file/task/'.$nameFile;
+        if ($this->model('Files_model')->saveFileBerkas($filename, $nameFile) > 0) {
+          Flasher::setFlash('berhasil', 'diupload', 'success', 'Task');
+          header('Location: ' . BASEURL . '/tasks');
+        } else {
+          Flasher::setFlash('gagal', 'diupload', 'danger', 'Task');
+          header('Location: ' . BASEURL . '/tasks');
+        }
+      } else {
+        echo "Upload Gagal!";
+      }
+    }
+
+    public function addNote() {
+      Utils::PrivatePage();
+      if ($this->model("Notes_model")->addNotes($_POST) > 0) {
+        Flasher::setFlash('berhasil', 'ditambah', 'success', 'Catatan');
+        header('Location: ' . BASEURL . '/tasks');
+        exit;
+      } else {
+        Flasher::setFlash('gagal', 'ditambah', 'danger', 'Catatan');
+        header('Location: ' . BASEURL . '/tasks');
+        exit;
       }
     }
 
@@ -156,5 +189,16 @@
         header('Location: ' . BASEURL . '/tasks');
         exit;
       }
+    }
+
+    public function showFileClient($id) {
+      if ($this->model("Files_model")->showFileClient($id) > 0) {
+        Flasher::setFlash('berhasil', 'ditampilkan', 'success', 'File');
+        header('Location: ' . BASEURL . '/tasks');
+      } else {
+        Flasher::setFlash('gagal', 'ditampilkan', 'danger', 'File');
+        header('Location: ' . BASEURL . '/tasks');
+      }
+
     }
   }

@@ -40,7 +40,9 @@
                 <?php if ($_SESSION['user']['role_name'] !== 'staff') echo '<th>Staff</th>' ?>
                 <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<th>Client</th>' ?>
                 <th>Deadline</th>
-                <th>Action</th>
+                <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<th>Action</th>' ?>
+                <?php if ($_SESSION['user']['role_name'] === 'clients') echo '<th>Hasil</th>' ?>
+                <?php if ($_SESSION['user']['role_name'] === 'clients') echo '<th>Berkas</th>' ?>
               </tr>
             </thead>
             <tbody>
@@ -56,8 +58,8 @@
                       <a href="'. BASEURL .'/tasks/change/'. $data['tasks'][$usr]['id'] .'" class="badge badge-warning mr-1 modalUbahTask" data-toggle="modal" data-target="#formModal" data-id="'.$data['tasks'][$usr]['id'].'">Ubah</a><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadTask" data-toggle="modal" data-target="#formModalUpload" data-id="'.$data['tasks'][$usr]['id'].'">Detail</a></td>'; ?>
                 
                   <?php if ($_SESSION['user']['role_name'] === 'staff') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadTask" data-toggle="modal" data-target="#formModalUpload" data-id="'.$data['tasks'][$usr]['id'].'">Upload</td>'; ?>
-                  <?php if ($_SESSION['user']['role_name'] === 'clients') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadTask" data-toggle="modal" data-target="#formModalUpload" data-id="'.$data['tasks'][$usr]['id'].'">Detail</td>'; ?>
-
+                  <?php if ($_SESSION['user']['role_name'] === 'clients') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadTask" data-toggle="modal" data-target="#formModalUpload" data-id="'.$data['tasks'][$usr]['id'].'">Lihat</td>'; ?>
+                  <?php if ($_SESSION['user']['role_name'] === 'clients') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadClientTask" data-toggle="modal" data-target="#formModalClientUpload" data-id="'.$data['tasks'][$usr]['id'].'">Upload</td>'; ?>
               </tr>
               <?php endforeach; ?>
             </tbody>
@@ -112,7 +114,6 @@
             />
           </div>
 
-
           <div class="form-group">
             <label for="staff">Staff</label>
             <select class="form-control" id="staff" name="staff"> 
@@ -140,12 +141,13 @@
   </div>
 </div>
 
+
 <!-- Modal -->
-<div class="modal fade" id="formModalUpload" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="formModalClientUpload" tabindex="-1" aria-labelledby="exampleModalUploadLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="formModalLabel">Detail Task</h5>
+        <h5 class="modal-title" id="formModalUploadLabel">Detail Berkas</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -156,7 +158,7 @@
             <label class="font-weight-bold">Tugas</label>
             <p id="task_name">Tugas Pajak 1</p>
           </div>
-          <div className="col-md-6">
+          <div class="col-md-6">
             <label class="font-weight-bold">Tanggal Deadline</label>
             <p id="task_tgl" class="btn-sm btn-text btn-light-primary text-uppercase font-weight-bold">12 Septemper 2021</p>
           </div>
@@ -166,12 +168,80 @@
           </div>
           <div class="col-md-12">
             <label class="font-weight-bold">Files</label>
+            <ul id="listDataBerkas" class="list-file">
+            </ul>
+          </div>
+        </div>
+      </div>
+      <form action="<?= BASEURL; ?>/tasks/uploadBerkas" method="post" class="form2" enctype="multipart/form-data">
+        <div class="modal-body">
+          <input hidden name="id" id="idUpload" >
+          <div class="button-wrap">
+            <label class="new-button" for="fileUpload"> Upload File</label>
+            <input type="file" id="fileUpload" name="fileUpload">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Data</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="formModalUpload" tabindex="-1" aria-labelledby="exampleModalUploadLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="formModalUploadLabel">Detail Task</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-info">
+        <div class="row">
+          <div class="col-md-6">
+            <label class="font-weight-bold">Tugas</label>
+            <p id="task_name">Tugas Pajak 1</p>
+          </div>
+          <div class="col-md-6">
+            <label class="font-weight-bold">Tanggal Deadline</label>
+            <p id="task_tgl" class="btn-sm btn-text btn-light-primary text-uppercase font-weight-bold">12 Septemper 2021</p>
+          </div>
+          <div class="col-md-12">
+            <label class="font-weight-bold">Deskripsi</label>
+            <p id="task_description">Tugas Pajak 1</p>
+          </div>
+          <div class="col-md-12 mb-3">
+            <form action="<?= BASEURL; ?>/tasks/addNote" method="post">
+              <input type="hidden" name="id" id="idTask" >
+              <div class="form-group">
+                <label for="description">Feedback</label>
+                <ul id="listDataFeedback" class="list-file">
+                </ul>
+                <textarea 
+                  class="form-control" 
+                  aria-label="With textarea" 
+                  name="description"
+                  col="4"  
+                  id="description"
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Tambah Feedback</button>
+              <button type="button" class="btn btn-success">Close Feedback</button>
+            </form>
+          </div>
+
+          <div class="col-md-12">
+            <label class="font-weight-bold">Files</label>
             <ul id="listData" class="list-file">
             </ul>
           </div>
         </div>
       </div>
-      <form action="<?= BASEURL; ?>/tasks/upload" method="post" class="form1" enctype="multipart/form-data">
+      <form action="<?= BASEURL; ?>/tasks/upload" method="post" class="form2" enctype="multipart/form-data">
         <div class="modal-body">
           <input hidden name="id" id="idUpload" >
           <?php if (($_SESSION['user']['role_name'] !== 'clients')): ?>
@@ -180,9 +250,6 @@
               <input type="file" id="fileUpload" name="fileUpload">
           </div>
           <?php endif ?>
-          <!-- <div class="fallback dz-message">
-            <input type="file" id="fileUpload" name="fileUpload">
-          </div> -->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

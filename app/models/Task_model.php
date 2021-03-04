@@ -42,6 +42,8 @@ class Task_model {
         DATE_FORMAT(t.created_at, "%d %M %Y") as tgl_created, 
         c.fullname as client, 
         s.fullname as staff,
+        c.no_telp as client_no,
+        c.address as client_address,
         f.filename
             from tasks as t 
             inner join clients as c 
@@ -170,12 +172,13 @@ class Task_model {
                 staff_id = :staff_id
               WHERE id = :id";
     $this->db->query($query);
+
     try {
       $this->db->bind('name', $data['name']);
       $this->db->bind('description', $data['description']);
       $this->db->bind('tgl_deadline', $data['tgl_deadline']);
-      $this->db->bind('client_id', $data['staff']);
-      $this->db->bind('staff_id', $data['client']);
+      $this->db->bind('client_id', $data['client']);
+      $this->db->bind('staff_id', $data['staff']);
       $this->db->bind('id', $data['id']);
       $this->db->execute();
     } catch(PDOException $e) {
@@ -199,7 +202,14 @@ class Task_model {
     $this->db->bind('id', $id);
     $task = $this->db->single();
 
-    $query = 'SELECT f.id, f.filename, f.date_created, f.task_id, f.path_name, f.user_id, u.username from files as f inner join users as u on u.id = f.user_id where task_id = :id';
+    switch($_SESSION['user']['role_name']) {
+      case 'clients':
+        $query = 'SELECT f.id, f.filename, DATE_FORMAT(f.date_created, "%d %M %Y") as date_created, f.task_id, f.path_name, f.user_id, u.username, f.show_client, f.file_client from files as f inner join users as u on u.id = f.user_id where task_id = :id and show_client = 1';
+        break;
+      default:
+        $query = 'SELECT f.id, f.filename, DATE_FORMAT(f.date_created, "%d %M %Y") as date_created, f.task_id, f.path_name, f.user_id, u.username, f.show_client, f.file_client from files as f inner join users as u on u.id = f.user_id where task_id = :id';
+        break;
+    } 
 
     $this->db->query($query);
     $this->db->bind('id', $task['id']);
@@ -207,6 +217,53 @@ class Task_model {
 
     $dataFile = $this->db->resultSet();
     $task['files'] = $dataFile;
+
+    $query = 'SELECT * from note where task_id = :id';
+    $this->db->query($query);
+    $this->db->bind('id', $task['id']);
+    $this->db->execute();
+    $dataFeedback = $this->db->resultSet();
+    $task['feedback'] = $dataFeedback;
+    return $task;
+  }
+
+  public function getTaskByIdBerkas($id) {
+    $query = 'SELECT t.id, t.name, t.description, t.tgl_deadline, c.id as client, s.id as staff
+      from tasks as t 
+      inner join clients as c 
+      on t.client_id = c.id
+      inner join staffs as s
+      on t.staff_id = s.id
+      where t.id = :id
+      ;
+    ';
+    $this->db->query($query);
+
+    $this->db->bind('id', $id);
+    $task = $this->db->single();
+
+    switch($_SESSION['user']['role_name']) {
+      case 'clients':
+        $query = 'SELECT f.id, f.filename, DATE_FORMAT(f.date_created, "%d %M %Y") as date_created, f.task_id, f.path_name, f.user_id, u.username, f.show_client, f.file_client from files as f inner join users as u on u.id = f.user_id where task_id = :id and file_client = 1';
+        break;
+      default:
+        $query = 'SELECT f.id, f.filename, DATE_FORMAT(f.date_created, "%d %M %Y") as date_created, f.task_id, f.path_name, f.user_id, u.username, f.show_client, f.file_client from files as f inner join users as u on u.id = f.user_id where task_id = :id and file_client = 1';
+        break;
+    } 
+
+    $this->db->query($query);
+    $this->db->bind('id', $task['id']);
+    $this->db->execute();
+
+    $dataFile = $this->db->resultSet();
+    $task['files'] = $dataFile;
+
+    $query = 'SELECT * from note where task_id = :id';
+    $this->db->query($query);
+    $this->db->bind('id', $task['id']);
+    $this->db->execute();
+    $dataFeedback = $this->db->resultSet();
+    $task['feedback'] = $dataFeedback;
     return $task;
   }
 
