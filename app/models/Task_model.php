@@ -7,7 +7,7 @@ class Task_model {
 
   public function getTask($limit = null) {
     if (!$limit) {
-      $query = 'SELECT t.id, t.name, DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+      $query = 'SELECT t.id, t.name, t.status, DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
         from tasks as t 
         inner join clients as c 
         on t.client_id = c.id
@@ -17,7 +17,7 @@ class Task_model {
       $this->db->query($query);
       $this->db->execute();
     } else {
-      $query = 'SELECT t.id, t.name, DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+      $query = 'SELECT t.id, t.name, t.status, DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
         from tasks as t 
         inner join clients as c 
         on t.client_id = c.id
@@ -38,20 +38,18 @@ class Task_model {
     if (!$limit) {
       $query = 'SELECT t.id, 
         t.name, 
+        t.status,
         DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, 
         DATE_FORMAT(t.created_at, "%d %M %Y") as tgl_created, 
         c.fullname as client, 
         s.fullname as staff,
         c.no_telp as client_no,
-        c.address as client_address,
-        f.filename
+        c.address as client_address 
             from tasks as t 
             inner join clients as c 
             on t.client_id = c.id
             inner join staffs as s
             on t.staff_id = s.id
-            left join files as f
-            on f.task_id = t.id
         WHERE created_at BETWEEN :date_from AND :date_to
       ';
       $this->db->query($query);
@@ -78,7 +76,7 @@ class Task_model {
 
   public function getTaskStaff($limit = null) {
     if (!$limit) {
-      $query = 'SELECT t.id, t.name,  DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+      $query = 'SELECT t.id, t.name, t.status, DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
         from tasks as t 
         inner join clients as c 
         on t.client_id = c.id
@@ -91,7 +89,7 @@ class Task_model {
       $this->db->bind('id', $_SESSION['user']['data_acc']['id']);
       $this->db->execute();
     } else {
-      $query = 'SELECT t.id, t.name,  DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+      $query = 'SELECT t.id, t.name, t.status, DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
         from tasks as t 
         inner join clients as c 
         on t.client_id = c.id
@@ -111,7 +109,7 @@ class Task_model {
 
   public function getTaskClient($limit = null) {
     if (!$limit) {
-      $query = 'SELECT t.id, t.name,  DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+      $query = 'SELECT t.id, t.name, t.status, DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
         from tasks as t 
         inner join clients as c 
         on t.client_id = c.id
@@ -124,7 +122,7 @@ class Task_model {
       $this->db->bind('id', $_SESSION['user']['data_acc']['id']);
       $this->db->execute();
     } else {
-      $query = 'SELECT t.id, t.name,  DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
+      $query = 'SELECT t.id, t.name,  t.status, DATE_FORMAT(t.tgl_deadline, "%d %M %Y") as tgl_deadline, c.fullname as client, s.fullname as staff
         from tasks as t 
         inner join clients as c 
         on t.client_id = c.id
@@ -144,8 +142,8 @@ class Task_model {
   }
 
   public function addTask($data) {
-    $query = 'INSERT INTO tasks (name, description, tgl_deadline, client_id, staff_id, created_at) 
-      VALUES (:name, :description, :tgl_deadline, :client_id, :staff_id, NOW())';
+    $query = 'INSERT INTO tasks (name, description, tgl_deadline, client_id, staff_id, created_at, status) 
+      VALUES (:name, :description, :tgl_deadline, :client_id, :staff_id, NOW(), "Menunggu Berkas")';
     $this->db->query($query);
     try {
       $this->db->bind('name', $data['name']);
@@ -187,8 +185,25 @@ class Task_model {
     return $this->db->rowCount();
   }
 
+  public function updateProcess($data) {
+    $query = "UPDATE tasks set 
+        status = :status
+      WHERE id = :id";
+    $this->db->query($query);
+
+    try {
+      $this->db->bind('id', $data['id']);
+      $this->db->bind('status', $data['proses']);
+      $this->db->execute();
+    } catch (PDOException $e) {
+      echo $e->getMessage();
+    }
+
+    return $this->db->rowCount();
+  }
+
   public function getTaskById($id) {
-    $query = 'SELECT t.id, t.name, t.description, t.tgl_deadline, c.id as client, s.id as staff
+    $query = 'SELECT t.id, t.name, t.description, t.status, t.tgl_deadline, c.id as client, s.id as staff
       from tasks as t 
       inner join clients as c 
       on t.client_id = c.id
@@ -204,10 +219,10 @@ class Task_model {
 
     switch($_SESSION['user']['role_name']) {
       case 'clients':
-        $query = 'SELECT f.id, f.filename, DATE_FORMAT(f.date_created, "%d %M %Y") as date_created, f.task_id, f.path_name, f.user_id, u.username, f.show_client, f.file_client from files as f inner join users as u on u.id = f.user_id where task_id = :id and show_client = 1';
+        $query = 'SELECT f.id, f.filename, DATE_FORMAT(f.date_created, "%d %M %Y") as date_created, f.task_id, f.path_name, f.user_id, u.username, f.show_client, f.file_client from files as f inner join users as u on u.id = f.user_id where task_id = :id and show_client = 1 and file_client = 0';
         break;
       default:
-        $query = 'SELECT f.id, f.filename, DATE_FORMAT(f.date_created, "%d %M %Y") as date_created, f.task_id, f.path_name, f.user_id, u.username, f.show_client, f.file_client from files as f inner join users as u on u.id = f.user_id where task_id = :id';
+        $query = 'SELECT f.id, f.filename, DATE_FORMAT(f.date_created, "%d %M %Y") as date_created, f.task_id, f.path_name, f.user_id, u.username, f.show_client, f.file_client from files as f inner join users as u on u.id = f.user_id where task_id = :id and file_client = 0';
         break;
     } 
 
@@ -228,7 +243,7 @@ class Task_model {
   }
 
   public function getTaskByIdBerkas($id) {
-    $query = 'SELECT t.id, t.name, t.description, t.tgl_deadline, c.id as client, s.id as staff
+    $query = 'SELECT t.id, t.name, t.description, t.status, t.tgl_deadline, c.id as client, s.id as staff
       from tasks as t 
       inner join clients as c 
       on t.client_id = c.id

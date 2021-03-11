@@ -40,9 +40,10 @@
                 <?php if ($_SESSION['user']['role_name'] !== 'staff') echo '<th>Staff</th>' ?>
                 <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<th>Client</th>' ?>
                 <th>Deadline</th>
+                <th>Status</th>
+                <th>Berkas Client</th>
                 <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<th>Action</th>' ?>
                 <?php if ($_SESSION['user']['role_name'] === 'clients') echo '<th>Hasil</th>' ?>
-                <?php if ($_SESSION['user']['role_name'] === 'clients') echo '<th>Berkas</th>' ?>
               </tr>
             </thead>
             <tbody>
@@ -54,12 +55,16 @@
                   <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<td>'. $data['tasks'][$usr]['client'] .'.</td>' ?>
 
                   <td><?= $data['tasks'][$usr]['tgl_deadline']; ?></td>
+                  <td><?= $data['tasks'][$usr]['status']; ?></td>
+                  <?php if ($_SESSION['user']['role_name'] === 'clients') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadClientTask" data-toggle="modal" data-target="#formModalClientUpload" data-id="'.$data['tasks'][$usr]['id'].'">Upload</td>'; ?>
+                  <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadClientTask" data-toggle="modal" data-target="#formModalClientUpload" data-id="'.$data['tasks'][$usr]['id'].'">Detail</td>'; ?>
+
+
                   <?php if ($_SESSION['user']['role_name'] === 'konsultan') echo '<td><a href="'. BASEURL .'/tasks/delete/'. $data['tasks'][$usr]['id'] .'" class="badge badge-danger mr-1" onclick="return confirm("yakin?")">hapus</a>
                       <a href="'. BASEURL .'/tasks/change/'. $data['tasks'][$usr]['id'] .'" class="badge badge-warning mr-1 modalUbahTask" data-toggle="modal" data-target="#formModal" data-id="'.$data['tasks'][$usr]['id'].'">Ubah</a><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadTask" data-toggle="modal" data-target="#formModalUpload" data-id="'.$data['tasks'][$usr]['id'].'">Detail</a></td>'; ?>
                 
                   <?php if ($_SESSION['user']['role_name'] === 'staff') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadTask" data-toggle="modal" data-target="#formModalUpload" data-id="'.$data['tasks'][$usr]['id'].'">Upload</td>'; ?>
                   <?php if ($_SESSION['user']['role_name'] === 'clients') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadTask" data-toggle="modal" data-target="#formModalUpload" data-id="'.$data['tasks'][$usr]['id'].'">Lihat</td>'; ?>
-                  <?php if ($_SESSION['user']['role_name'] === 'clients') echo '<td><a href="'. BASEURL .'/tasks/change/'.$data['tasks'][$usr]['id'].'" class="badge badge-success modalUploadClientTask" data-toggle="modal" data-target="#formModalClientUpload" data-id="'.$data['tasks'][$usr]['id'].'">Upload</td>'; ?>
               </tr>
               <?php endforeach; ?>
             </tbody>
@@ -171,19 +176,40 @@
             <ul id="listDataBerkas" class="list-file">
             </ul>
           </div>
+          <div class="col-md-12">
+            <?php if ($_SESSION['user']['role_name'] === 'clients'):?>
+              <form method="post" action="<?= BASEURL; ?>/tasks/changeToProcess" class="hiddenSiap">
+                <input hidden name="id" id="idTas" >
+                <input hidden name="proses" value="Siap diproses" >
+                <button type="submit" class="btn btn-success">Siap diprocess</button>
+              </form>
+            <?php endif ?>
+            <?php if ($_SESSION['user']['role_name'] !== 'clients'):?>
+              <form method="post" action="<?= BASEURL; ?>/tasks/changeToProcess" class="hiddenSedang">
+                <input hidden name="id" id="idTas" >
+                <input hidden name="proses" value="Sedang diproses" >
+                <button type="submit" class="btn btn-success">Sedang diprosess</button>
+              </form>
+            <?php endif ?>
+          </div>
         </div>
       </div>
       <form action="<?= BASEURL; ?>/tasks/uploadBerkas" method="post" class="form2" enctype="multipart/form-data">
         <div class="modal-body">
-          <input hidden name="id" id="idUpload" >
-          <div class="button-wrap">
-            <label class="new-button" for="fileUpload"> Upload File</label>
-            <input type="file" id="fileUpload" name="fileUpload">
-          </div>
+          <input hidden name="id" id="idUpload" class="idTask">
+          <?php if (($_SESSION['user']['role_name'] === 'clients')): ?>
+
+            <div class="button-wrap">
+              <label class="new-button" for="fileUpload"> Upload File</label>
+              <input type="file" id="fileUpload" name="fileUpload">
+            </div>
+          <?php endif ?>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save Data</button>
+          <?php if ($_SESSION['user']['role_name'] === 'clients'):?>
+            <button type="submit" class="btn btn-primary">Save Data</button>
+          <?php endif ?>
         </div>
       </form>
     </div>
@@ -215,23 +241,34 @@
             <p id="task_description">Tugas Pajak 1</p>
           </div>
           <div class="col-md-12 mb-3">
-            <form action="<?= BASEURL; ?>/tasks/addNote" method="post">
-              <input type="hidden" name="id" id="idTask" >
-              <div class="form-group">
-                <label for="description">Feedback</label>
-                <ul id="listDataFeedback" class="list-file">
-                </ul>
-                <textarea 
-                  class="form-control" 
-                  aria-label="With textarea" 
-                  name="description"
-                  col="4"  
-                  id="description"
-                ></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary">Tambah Feedback</button>
-              <button type="button" class="btn btn-success">Close Feedback</button>
-            </form>
+            <label for="description">Feedback</label>
+            <ul id="listDataFeedback" class="list-file">
+            </ul>
+            <?php if ($_SESSION['user']['role_name'] === 'clients'):?>
+              <form action="<?= BASEURL; ?>/tasks/addNote" method="post" class="hiddenSelesai">
+                <input type="hidden" name="id" id="idTask" >
+                <div class="form-group">
+                  
+                  <textarea 
+                    class="form-control" 
+                    aria-label="With textarea" 
+                    name="description"
+                    col="4"  
+                    id="description"
+                  ></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Tambah Feedback</button>
+              </form>
+            <?php endif ?>
+          </div>
+          <div class="col-md-12 mb-3 hiddenSelesai">
+            <?php if ($_SESSION['user']['role_name'] === 'clients'):?>
+              <form method="post" action="<?= BASEURL; ?>/tasks/changeToProcess">
+                <input hidden name="id" class="idTask" >
+                <input hidden name="proses" value="Selesai" >
+                <button type="submit" class="btn btn-success">Close Feedback</button>
+              </form>
+            <?php endif ?>
           </div>
 
           <div class="col-md-12">
@@ -239,15 +276,24 @@
             <ul id="listData" class="list-file">
             </ul>
           </div>
+          <div class="col-md-12">
+            <?php if ($_SESSION['user']['role_name'] === 'konsultan'):?>
+              <form method="post" action="<?= BASEURL; ?>/tasks/changeToProcess">
+                <input hidden name="id" id="idTasks" >
+                <input hidden name="proses" value="Siap dicek" >
+                <button type="submit" class="btn btn-success">Siap dicek</button>
+              </form>
+            <?php endif ?>
+          </div>
         </div>
       </div>
       <form action="<?= BASEURL; ?>/tasks/upload" method="post" class="form2" enctype="multipart/form-data">
         <div class="modal-body">
-          <input hidden name="id" id="idUpload" >
+          <input hidden name="id" id="idUpload" class="idTask">
           <?php if (($_SESSION['user']['role_name'] !== 'clients')): ?>
             <div class="button-wrap">
-              <label class="new-button" for="fileUpload"> Upload File</label>
-              <input type="file" id="fileUpload" name="fileUpload">
+              <label class="new-button" for="fileUpload1"> Upload File</label>
+              <input type="file" id="fileUpload1" name="fileUpload1">
           </div>
           <?php endif ?>
         </div>

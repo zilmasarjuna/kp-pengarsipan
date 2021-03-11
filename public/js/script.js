@@ -100,6 +100,8 @@ $(function() {
   $('.modalUploadTask').on('click', function() {
     var id = $(this).data('id');
     $("#idTask").val(id);
+    $("#idTasks").val(id);
+    $(".idTask").val(id);
     $("#listData").children().remove();
     $("#listDataFeedback").children().remove();
     $('.modal-footer button[type=submit]').html('Save Data');
@@ -112,9 +114,13 @@ $(function() {
       dataType: 'json',
       success: function(data) {
         $("#idUpload").val(data.id);
+        $(".idTask").val(data.id);
         $("#task_name").text(data.name);
         $("#task_description").text(data.description);
         $("#task_tgl").text(data.tgl_deadline);
+        if (data.status === "Selesai") {
+          $('.hiddenSelesai').hide();
+        }
 
         $.fn.addNewRow = function (row) {
           var status = row.show_client === "1" ? "- ditampilkan client" : "- tidak ditampilkan client";
@@ -148,6 +154,9 @@ $(function() {
         if (data.files.length === 0) {
           $("#listData").append("<li class='text-danger'>File masih kosong</li>");
         }
+        if (data.feedback.length === 0) {
+          $("#listDataFeedback").append("<li class='text-danger'>Belum ada feedback</li>");
+        }
         for (var i = 0; i < data.files.length; i++) {
           $("#listData").addNewRow(data.files[i]);
         }
@@ -161,6 +170,7 @@ $(function() {
   $('.modalUploadClientTask').on('click', function() {
     var id = $(this).data('id');
     $("#idTask").val(id);
+    $("#idTas").val(id);
     $("#listDataBerkas").children().remove();
     $("#listDataFeedback").children().remove();
     $('.modal-footer button[type=submit]').html('Save Data');
@@ -173,18 +183,21 @@ $(function() {
       dataType: 'json',
       success: function(data) {
         $("#idUpload").val(data.id);
+        $(".idTask").val(data.id);
         $("#task_name").text(data.name);
         $("#task_description").text(data.description);
         $("#task_tgl").text(data.tgl_deadline);
-
+        if (data.status !== "Menunggu Berkas") {
+          $('.hiddenSiap').hide();
+        }
+        if (data.status !== "Siap diproses") {
+          $('.hiddenSedang').hide();
+        }
         $.fn.addNewRow = function (row) {
           var status = row.show_client === "1" ? "- ditampilkan client" : "- tidak ditampilkan client";
           switch(session.role_name) {
-            case 'konsultan':
-              $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ row.date_created +" -  " + row.username +" " + status + "</span></div></a><a href='"+window.location.origin+"/mvc/public/tasks/deleteFile/"+row.id+"' class='badge badge-danger mr-2'>Delete</a><a href='"+window.location.origin+"/mvc/public/tasks/showFileClient/"+row.id+"' class='badge badge-success'>tampilkan ke client</a></li>");
-              break;
-            case 'staff':
-              $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ row.date_created +" -  "+ row.username +"</span></div></a></li>");
+            case 'clients':
+              $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ row.date_created +" -  " + row.username +" " + status + "</span></div></a><a href='"+window.location.origin+"/mvc/public/tasks/deleteFile/"+row.id+"' class='badge badge-danger mr-2'>Delete</a></li>");
               break;
             default:
               $(this).append("<li><a class='d-flex align-items-center text-muted text-hover-primary py-1 f-12' href='"+window.location.origin+"/mvc/public"+row.path_name+"' download><div>"+ row.filename + "</div><div><span>"+ row.date_created +"</span></div></a></li>");
@@ -209,6 +222,7 @@ $(function() {
         if (data.files.length === 0) {
           $("#listDataBerkas").append("<li class='text-danger'>File masih kosong</li>");
         }
+        
         for (var i = 0; i < data.files.length; i++) {
           $("#listDataBerkas").addNewRow(data.files[i]);
         }
@@ -221,10 +235,19 @@ $(function() {
 
 
   $("#fileUpload").change(function() {
+    console.log('jaan', $('#fileUpload'));
     var i = $(this).prev('label').clone();
 		var file = $('#fileUpload')[0].files[0].name;
 		$(this).prev('label').text(file);
   })
+
+  $("#fileUpload1").change(function() {
+    console.log('jaan', $('#fileUpload'));
+    var i = $(this).prev('label').clone();
+		var file = $('#fileUpload1')[0].files[0].name;
+		$(this).prev('label').text(file);
+  })
+
 
   $('.printReport').on('click', function() {
     var pdf = new jsPDF('p', 'pt', 'letter');

@@ -16,9 +16,10 @@
             <tr>
               <th>#</th>
               <?php if ($_SESSION['user']['role_name'] !== 'clients') echo '<th>Client</th>' ?>
-              <th>No Telp Client</th>
-              <th>Alamat Client</th>
+              <th>No Telp</th>
+              <th>Alamat</th>
               <th>Tugas</th>
+              <th>Status</th>
               <?php if ($_SESSION['user']['role_name'] !== 'staff') echo '<th>Staff</th>' ?>
               <th>Deadline</th>
               <th>Dibuat</th>
@@ -32,6 +33,7 @@
                 <td><?= $data['tasks'][$usr]['client_no']; ?></td>
                 <td><?= $data['tasks'][$usr]['client_address']; ?></td>
                 <td><?= $data['tasks'][$usr]['name']; ?></td>
+                <td><?= $data['tasks'][$usr]['status']; ?></td>
                 <?php if ($_SESSION['user']['role_name'] !== 'staff') echo '<td>'. $data['tasks'][$usr]['staff'] .'.</td>' ?>
                 <td><?= $data['tasks'][$usr]['tgl_deadline']; ?></td>
                 <td><?= $data['tasks'][$usr]['tgl_created']; ?></td>

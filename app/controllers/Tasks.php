@@ -20,7 +20,6 @@
         default: 
         $data['tasks'] = [];
       }
-      
       // $mail = new PHPMailer();
 
       // $mail->IsSMTP();
@@ -119,8 +118,8 @@
     }
 
     public function upload() {
-      $nameFile = $_FILES['fileUpload']['name'];
-      $nameSementara = $_FILES['fileUpload']['tmp_name'];
+      $nameFile = $_FILES['fileUpload1']['name'];
+      $nameSementara = $_FILES['fileUpload1']['tmp_name'];
 
       $dirUpload = "./file/task/";
       $terupload = move_uploaded_file($nameSementara, $dirUpload.$nameFile);
@@ -200,5 +199,16 @@
         header('Location: ' . BASEURL . '/tasks');
       }
 
+    }
+
+    public function changeToProcess() {
+      if ($this->model("Task_model")->updateProcess($_POST) > 0) {
+        Flasher::setFlash('berhasil', 'diubah', 'success', 'Status');
+        header('Location: ' . BASEURL . '/tasks');
+      } else {
+        Flasher::setFlash('gagal', 'diubah', 'danger', 'Status');
+        header('Location: ' . BASEURL . '/tasks');
+        exit;
+      }
     }
   }
